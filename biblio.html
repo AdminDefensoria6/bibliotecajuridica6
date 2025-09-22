@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca de Normativa Doctrina y Jurisprudencia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-normativa: #1f78b4;
+            --color-doctrina: #fd8d3c;
+            --color-jur-nacional: #33a02c;
+            --color-jur-stj: #6a3d9a;
+            --color-background: #f4f7f6;
+            --color-text-dark: #2c3e50;
+            --color-text-light: #ecf0f1;
+            --color-accent: #3498db;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-background);
+            color: var(--color-text-dark);
+        }
+
+        .main-header {
+            background: linear-gradient(90deg, #33a02c, #1f78b4);
+            color: var(--color-text-light);
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-header h1 {
+            margin: 0;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+        }
+
+        .main-container {
+            /* Se ha cambiado de Grid a Flexbox para centrar los módulos */
+            display: flex;
+            flex-direction: column; /* Apila los módulos verticalmente */
+            align-items: center; /* Centra horizontalmente los módulos */
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+
+        .module-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 600px; /* Limita el ancho para que no se extienda demasiado en pantallas grandes */
+        }
+
+        .module-title-container {
+            padding: 1.5rem;
+            color: var(--color-text-light);
+            font-weight: 600;
+            font-size: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .module-title-container:hover {
+            opacity: 0.9;
+        }
+
+        .module-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+            background-color: #f8f8f8;
+        }
+
+        .module-list.expanded {
+            max-height: 500px; /* Ajusta este valor si necesitas más espacio */
+        }
+
+        .module-list li {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .module-list a {
+            text-decoration: none;
+            color: var(--color-accent);
+            display: block;
+            transition: color 0.2s ease;
+        }
+
+        .module-list a:hover {
+            color: var(--color-text-dark);
+            text-decoration: underline;
+        }
+
+        .normativa .module-title-container { background-color: var(--color-normativa); }
+        .doctrina .module-title-container { background-color: var(--color-doctrina); }
+        .jur-nacional .module-title-container { background-color: var(--color-jur-nacional); }
+        .jur-stj .module-title-container { background-color: var(--color-jur-stj); }
+
+        .main-footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: var(--color-text-dark);
+            color: var(--color-text-light);
+        }
+
+        .content-frame {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .content-frame.visible {
+            display: flex;
+        }
+
+        .content-frame iframe {
+            width: 90%;
+            height: 90%;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <h2>Biblioteca de Normativa Doctrina y Jurisprudencia</h2>
+    </header>
+
+    <main class="main-container" id="app-root">
+        </main>
+
+    <footer class="main-footer">
+        <p>USO EXCLUSIVO DEFENSORIA CIVIL Y COMERCIAL 6 PODER JUDICIAL DE MISIONES</p>
+    </footer>
+
+    <div id="content-frame" class="content-frame">
+        <span class="close-button" id="close-button">&times;</span>
+        <iframe src="" frameborder="0" id="viewer-iframe"></iframe>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const appRoot = document.getElementById('app-root');
+            const contentFrame = document.getElementById('content-frame');
+            const viewerIframe = document.getElementById('viewer-iframe');
+            const closeButton = document.getElementById('close-button');
+
+            const data = [
+                {
+                    title: 'Normativa Vigente',
+                    colorClass: 'normativa',
+                    items: [
+                        { name: 'Ley XII-27', url: 'https://admindefensoria6.github.io/codigoprocesalmisiones/' },
+                        { name: 'Ley Orgánica del Poder Judicial', url: '#' },
+                        { name: 'Constitución Nacional', url: '#' }
+                    ]
+                },
+                {
+                    title: 'Doctrina Aplicable',
+                    colorClass: 'doctrina',
+                    items: [
+                        { name: 'Análisis sobre la Ley de Amparo', url: '#' },
+                        { name: 'Comentario sobre el Código Civil y Comercial', url: '#' }
+                    ]
+                },
+                {
+                    title: 'Jurisprudencia Nacional',
+                    colorClass: 'jur-nacional',
+                    items: [
+                        { name: 'Fallo "Bazterrica" CSJN', url: '#' },
+                        { name: 'Fallo "Rizzo" CSJN', url: '#' }
+                    ]
+                },
+                {
+                    title: 'Jurisprudencia STJ Misiones',
+                    colorClass: 'jur-stj',
+                    items: [
+                        { name: 'Fallos sobre Derecho de Familia', url: '#' },
+                        { name: 'Sentencias en materia Penal', url: '#' }
+                    ]
+                }
+            ];
+
+            const createModule = (item) => {
+                const moduleContainer = document.createElement('div');
+                moduleContainer.className = `module-container ${item.colorClass}`;
+                
+                const titleContainer = document.createElement('div');
+                titleContainer.className = 'module-title-container';
+                titleContainer.textContent = item.title;
+                
+                const list = document.createElement('ul');
+                list.className = 'module-list';
+
+                item.items.forEach(listItem => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.textContent = listItem.name;
+                    a.href = listItem.url;
+
+                    if (listItem.url !== '#') {
+                        a.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            viewerIframe.src = listItem.url;
+                            contentFrame.classList.add('visible');
+                        });
+                    }
+                    
+                    li.appendChild(a);
+                    list.appendChild(li);
+                });
+
+                titleContainer.addEventListener('click', () => {
+                    list.classList.toggle('expanded');
+                });
+
+                moduleContainer.appendChild(titleContainer);
+                moduleContainer.appendChild(list);
+                
+                return moduleContainer;
+            };
+
+            data.forEach(item => {
+                appRoot.appendChild(createModule(item));
+            });
+
+            closeButton.addEventListener('click', () => {
+                contentFrame.classList.remove('visible');
+                viewerIframe.src = ''; // Limpiar el iframe al cerrar
+            });
+        });
+    </script>
+</body>
+</html>
